@@ -1,4 +1,0 @@
-set PDF_SERVICES_CLIENT_ID=0dc643ef927c4fa184f8b99117b17235
-set PDF_SERVICES_CLIENT_SECRET=p8e-VUKWlq_QHi-v0OSHLpJEFlc6E8Mi-BP5
-set AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=https;AccountName=dsmagristatsevalstorage;AccountKey=2GLpZ80+lBaZyRXTAtYWKM29utxVJZsrC5snaydIKfF/ThyNaW3KpQTz+7pcSHu+EeSAinn3AlY1+ASthNRLxQ==;EndpointSuffix=core.windows.net
-set AZURE_STORAGE_CONTAINER_NAME=performance-pdf
