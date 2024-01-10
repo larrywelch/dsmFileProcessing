@@ -9,6 +9,12 @@ to use the library, pip install dsmPDFLib/dist/DSMPdfLib-[version].py3-none-any.
 # Run Tests
 python setup.py pytest
 
+# Examples
+The examples folder contains example applications that use the library.  There is also an examples file one folder up that uses the pip install ....whl
+
+# Install Python Pacakged from Requirements.txt
+pip install -r requirements.txt
+
 # Development Notes
 Inspired by:
 https://medium.com/analytics-vidhya/how-to-create-a-python-library-7d5aea80cc3f
@@ -23,7 +29,6 @@ https://docs.python.org/3/library/venv.html
 https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/
 
 
-# Run Tests
-python setup.py pytest
+
 
 
