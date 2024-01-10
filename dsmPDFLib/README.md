@@ -12,8 +12,14 @@ python setup.py pytest
 # Examples
 The examples folder contains example applications that use the library.  There is also an examples file one folder up that uses the pip install ....whl
 
+## Run the examples
+Azure Examples:
+  python examples/azureExample.py
+
+
 # Install Python Pacakged from Requirements.txt
 pip install -r requirements.txt
+
 
 # Development Notes
 Inspired by:
