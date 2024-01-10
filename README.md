@@ -9,3 +9,6 @@ The dsmCSVLib provides features for uploading csv files to azure, parsing csv fi
 # PDF Library
 The dsmPDFLib provides features for uploading pdf files to azure, parsing csv files to then be processed into a sql database.
 
+# Environment Variables
+The libraries, examples, and tests utilize environment variables.  The .gitignore has been updated to exclued set-env-vars.bat.  It's best to create this file within the library folders for setting the values.
+
