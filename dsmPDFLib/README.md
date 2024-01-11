@@ -14,6 +14,8 @@ to use the library, pip install dsmPDFLib/dist/DSMPdfLib-[version].py3-none-any.
 Some of the tests and examples require the following environment variables:
 AZURE_STORAGE_CONNECTION_STRING
 AZURE_STORAGE_CONTAINER_NAME
+PDF_SERVICES_CLIENT_ID
+PDF_SERVICES_CLIENT_SECRET
 
 They can be set in the terminal window or using a batch file:
 set AZURE_STORAGE_CONNECTION_STRING=some_value

@@ -1,0 +1,46 @@
+# DSM Azure Library
+The library that encapsulates functions for interacting with Azure - currently limited to Azure Storage
+
+# Setup
+Make sure to execute the following:
+pip install build
+pip install pytest
+pip install pytest-runner
+
+# Build Library
+## To build the tar and the wheel files
+python -m build
+
+## To just build the wheel file
+python setup.py bdist_wheel
+
+to use the library, pip install dsmAzureLib/dist/DSMAzureLib-[version].py3-none-any.whl
+
+# Environment Variables
+Some of the tests and examples require the following environment variables:
+AZURE_STORAGE_CONNECTION_STRING
+AZURE_STORAGE_CONTAINER_NAME
+
+They can be set in the terminal window or using a batch file:
+set AZURE_STORAGE_CONNECTION_STRING=some_value
+set AZURE_STORAGE_CONTAINER_NAME=some_value
+
+These values should point to a valid azure storage account.  The container doesn't have to exist, it will get created if needed.
+
+# Run Tests
+python setup.py pytest
+
+# Examples
+The examples folder contains example applications that use the library.  There is also an examples file one folder up that uses the pip install ....whl
+
+## Run the examples
+Azure Examples:
+  python examples/azureExample.py
+
+
+# Install Python Pacakged from Requirements.txt
+pip install -r requirements.txt
+
+
+
+
