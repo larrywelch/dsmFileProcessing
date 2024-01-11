@@ -2,6 +2,10 @@
 The library for processing pdf files - originally developed to process files provided from Poulty Plan
 
 # Build Library
+## To build the tar and the wheel files
+python -m build
+
+## To just build the wheel file
 python setup.py bdist_wheel
 
 to use the library, pip install dsmPDFLib/dist/DSMPdfLib-[version].py3-none-any.whl
@@ -18,7 +22,6 @@ set AZURE_STORAGE_CONTAINER_NAME=some_value
 These values should point to a valid azure storage account.  The container doesn't have to exist, it will get created if needed.
 
 # Run Tests
-
 python setup.py pytest
 
 # Examples
@@ -32,6 +35,11 @@ Azure Examples:
 # Install Python Pacakged from Requirements.txt
 pip install -r requirements.txt
 
+# Known Issues
+Everything works, however we get this warning that needs to eventually be resolved if possible:
+.venv\Lib\site-packages\requests\__init__.py:102
+  c:\Dev_Area\DSM\git\dsmFileProcessing\dsmPDFLib\.venv\Lib\site-packages\requests\__init__.py:102: RequestsDependencyWarning: urllib3 (1.26.13) or chardet (5.2.0)/charset_normalizer (2.0.12) doesn't match a supported version!
+    warnings.warn("urllib3 ({}) or chardet ({})/charset_normalizer ({}) doesn't match a supported "
 
 # Development Notes
 Inspired by:

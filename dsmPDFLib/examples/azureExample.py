@@ -4,20 +4,20 @@
 
 import string
 import os
-from pdfLib.azureConfig import azureConfig
+from pdfLib.azureUtil import azureUtil
 from pdfLib.azureFunctions import azureFunctions
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 
-def listBlobs(azConfig:azureConfig):
+def listBlobs(azUtil:azureUtil):
   print('[listBlobs] blobs contains:')
-  blobs = azureFunctions.getBlobs(azConfig)
+  blobs = azureFunctions.getBlobs(azUtil)
 
   for blob in blobs:
     print(blob.name)
 
   print('[listBlobs] success!')
   
-def uploadSampleFile(azConfig:azureConfig):
+def uploadSampleFile(azUtil:azureUtil):
   print('[uploadSampleFile] uploading sample file...')
   
   # Get the sample file - note that this tests expects a folder to exist (sample-pdfs) and for it to contain a sample.pdf file
@@ -27,7 +27,7 @@ def uploadSampleFile(azConfig:azureConfig):
   print(fileName)
   
   # Upload the file - we get back a BlobServiceClient 
-  blobClient = azureFunctions.uploadFile(azConfig, fileName)
+  blobClient = azureFunctions.uploadFile(azUtil, fileName)
   assert blobClient != None
   
   # Now let's delete the file - include = Deletes the blob along with all snapshots.
@@ -37,15 +37,15 @@ def uploadSampleFile(azConfig:azureConfig):
   print('[uploadSampleFile] success!')
 
 
-def downloadBlob(azConfig:azureConfig):
+def downloadBlob(azUtil:azureUtil):
   print('[downloadBlob] blobs contains:')
-  blobs = azureFunctions.getBlobs(azConfig)
+  blobs = azureFunctions.getBlobs(azUtil)
   blobList = list(blobs)
   number_of_blobs = len(blobList)
   if (number_of_blobs > 0):
     # download the first blob
     blob = blobList[0]
-    stream = azureFunctions.downloadBlob(azConfig, blob.name)
+    stream = azureFunctions.downloadBlob(azUtil, blob.name)
     assert stream != None   
     stream.close()
     print('[downloadBlob] success!')
@@ -56,18 +56,18 @@ def main():
   connectionString = os.getenv('AZURE_STORAGE_CONNECTION_STRING')
   containerName = os.getenv('AZURE_STORAGE_CONTAINER_NAME')
 
-  azConfig = azureConfig(connectionString, containerName)
+  azUtil = azureUtil(connectionString, containerName)
   
   print('Executing listBlobs()...')
-  listBlobs(azConfig)
+  listBlobs(azUtil)
   print('')
   
   print('Executing downloadBlob()...')
-  downloadBlob(azConfig)
+  downloadBlob(azUtil)
   print('')
   
   print('Executing uploadSampleFile()...')
-  uploadSampleFile(azConfig)
+  uploadSampleFile(azUtil)
   print('')
   
   print('Complete.')

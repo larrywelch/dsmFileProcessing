@@ -1,17 +1,17 @@
 #
-# Tests for the azure config class
+# Tests for the azure util class
 #
 
 import os
-from pdfLib.azureConfig import azureConfig
+from pdfLib.azureUtil import azureUtil
 
 def test_createObject():
-  config = azureConfig("", "")
-  assert config != None
+  azUtil = azureUtil("", "")
+  assert azUtil != None
   
 def test_blobSvcClientEmptyConfig():
-  config = azureConfig("", "")
-  assert config.getBlobServiceClient() == None
+  azUtil = azureUtil("", "")
+  assert azUtil.getBlobServiceClient() == None
 
 def test_blobSvcClient():
   # Get the connection string from the environment variable
@@ -20,13 +20,13 @@ def test_blobSvcClient():
   assert connectionString
 
   # Create our azureConfig using only the connection string - we don't need a container for this test  
-  config = azureConfig(connectionString, "")
-  blobSvcClient = config.getBlobServiceClient()
+  azUtil = azureUtil(connectionString, "")
+  blobSvcClient = azUtil.getBlobServiceClient()
   assert blobSvcClient != None
   
 def test_containerClientEmptyConfig():
-  config = azureConfig("", "")
-  assert config.getContainerClient() == None
+  azUtil = azureUtil("", "")
+  assert azUtil.getContainerClient() == None
 
 def test_containerClient():
   # Get the connection string from the environment variable
@@ -37,8 +37,8 @@ def test_containerClient():
   assert connectionString and containerName
   
   # Create an azureConfig using the connection string and container name
-  config = azureConfig(connectionString, containerName)
-  containerClient = config.getContainerClient()
+  azUtil = azureUtil(connectionString, containerName)
+  containerClient = azUtil.getContainerClient()
   assert containerClient != None
   
   

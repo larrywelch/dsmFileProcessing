@@ -8,7 +8,7 @@ import string
 from azure.storage.blob import BlobServiceClient, ContainerClient
 
 
-class azureConfig() :
+class azureUtil() :
   
   def __init__(self, connectionString: string, containerName: string):
     # The connection string for the Azure Container that contains the PDF files for processing  
