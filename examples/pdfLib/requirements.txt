@@ -1,0 +1,3 @@
+../../dsmPdfLib/dist/DSMPdfLib-0.1.0-py3-none-any.whl
+pdfquery==0.4.3
+pdfservices-sdk==2.3.0
