@@ -1,5 +1,5 @@
 # DSM Azure Library Examples
-
+Examples to demonstrate how to use the DSM Azure Library
 
 # Installation
 It best to create a virtual environment to isolate the environment and be sure the requirements.txt file is accurate

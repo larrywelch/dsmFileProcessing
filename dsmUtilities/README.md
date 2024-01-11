@@ -23,14 +23,8 @@ to use the library, pip install dsmAzureLib/dist/DSMAzureLib-[version].py3-none-
 
 # Environment Variables
 Some of the tests and examples require the following environment variables:
-## For azure functions and azure util testing
 AZURE_STORAGE_CONNECTION_STRING
 AZURE_STORAGE_CONTAINER_NAME
-
-## For email testing
-AZURE_EMAIL_SVC_CONNECTION_STRING
-AZURE_EMAIL_SVC_SENDER_ADDRESS
-AZURE_EMAIL_SVC_SEND_TO_LIST
 
 They can be set in the terminal window or using a batch file:
 set AZURE_STORAGE_CONNECTION_STRING=some_value

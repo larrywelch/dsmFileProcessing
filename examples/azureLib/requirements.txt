@@ -1,2 +1,3 @@
 ../../dsmAzureLib/dist/DSMAzureLib-0.1.0-py3-none-any.whl
+azure-communication-email
 azure-storage-blob==12.17.0

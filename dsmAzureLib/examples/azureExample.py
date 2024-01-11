@@ -3,6 +3,7 @@
 #
 
 import os
+from dsmAzureLib import emailUtil
 from dsmAzureLib.azureUtil import azureUtil
 from dsmAzureLib.azureFunctions import azureFunctions
 
@@ -49,6 +50,25 @@ def downloadBlob(azUtil:azureUtil):
     print('[downloadBlob] success!')
 
 
+def sendEmail(azUtil:azureUtil):
+  print('[sendEmail] sending email...')
+  
+    # Get environment variables
+  emailSvcConnStr = os.environ.get('AZURE_EMAIL_SVC_CONNECTION_STRING')
+  emailSvcSenderAddress = os.environ.get('AZURE_EMAIL_SVC_SENDER_ADDRESS')
+  emailSvcSendToList = os.environ.get('AZURE_EMAIL_SVC_SEND_TO_LIST')
+  
+  assert emailSvcConnStr and emailSvcSenderAddress and emailSvcSendToList
+  
+  # Create the email notification object
+  emn = emailUtil(emailSvcConnStr, emailSvcSenderAddress)
+  emn.sendEmail('Email from Unit Test', \
+    'This email was sent from the unit tests.', \
+    emailSvcSendToList
+    )
+  
+  print('[sendEmai] complete!')
+  
 def main():
   # Get the connection string from the environment variable
   connectionString = os.getenv('AZURE_STORAGE_CONNECTION_STRING')
@@ -66,6 +86,10 @@ def main():
   
   print('Executing uploadSampleFile()...')
   uploadSampleFile(azUtil)
+  print('')
+  
+  print('Executing sendEmail()...')
+  sendEmail(azUtil)
   print('')
   
   print('Complete.')
