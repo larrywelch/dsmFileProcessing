@@ -3,7 +3,7 @@
 #
 
 import os
-from pdfLib.pdfUtil import pdfUtil
+from dsmPdfLib.pdfUtil import pdfUtil
 
 def test_createObject():
   util = pdfUtil("","")

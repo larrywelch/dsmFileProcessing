@@ -5,7 +5,6 @@
 import os
 from dsmAzureLib.azureUtil import azureUtil
 from dsmAzureLib.azureFunctions import azureFunctions
-from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 
 def test_getBlobs():
   # Get the connection string from the environment variable

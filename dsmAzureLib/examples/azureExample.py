@@ -2,11 +2,9 @@
 # Use the Azure Library to perform functions
 #
 
-import string
 import os
 from dsmAzureLib.azureUtil import azureUtil
 from dsmAzureLib.azureFunctions import azureFunctions
-from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 
 def listBlobs(azUtil:azureUtil):
   print('[listBlobs] blobs contains:')

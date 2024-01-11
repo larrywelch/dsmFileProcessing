@@ -7,6 +7,11 @@ pip install build
 pip install pytest
 pip install pytest-runner
 
+## Library Development Mode
+https://setuptools.pypa.io/en/latest/userguide/development_mode.html
+The examples will fail unless the library is made editable:
+pip install --editable .
+
 # Build Library
 ## To build the tar and the wheel files
 python -m build

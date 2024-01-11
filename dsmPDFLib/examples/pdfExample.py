@@ -4,7 +4,7 @@
 
 from io import BufferedReader
 import os
-from pdfLib.pdfUtil import pdfUtil
+from dsmPdfLib.pdfUtil import pdfUtil
 
 def getUtil() -> pdfUtil:
   print('[getUtil] entered...')
