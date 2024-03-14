@@ -5,13 +5,14 @@
 from io import BufferedReader
 import os
 from dsmPdfLib.pdfUtil import pdfUtil
+from config import settings
 
 def getUtil() -> pdfUtil:
   print('[getUtil] entered...')
   
   # get the pdf env vars
-  pdfSvcClientId = os.getenv('PDF_SERVICES_CLIENT_ID')  
-  pdfSvcClientSecret = os.getenv('PDF_SERVICES_CLIENT_SECRET')
+  pdfSvcClientId = settings['PDF_SERVICES_CLIENT_ID']
+  pdfSvcClientSecret = settings['PDF_SERVICES_CLIENT_SECRET']
   assert pdfSvcClientId and pdfSvcClientSecret
   util = pdfUtil(pdfSvcClientId, pdfSvcClientSecret)
   

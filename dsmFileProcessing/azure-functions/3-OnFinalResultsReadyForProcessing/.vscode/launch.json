@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach to 3-OnFinalResultsReadyForProcessing",
+      "type": "python",
+      "request": "attach",
+      "port": 9093,
+      "preLaunchTask": "func: host start"
+    }
+  ]
+}

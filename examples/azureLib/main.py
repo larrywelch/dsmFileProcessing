@@ -6,6 +6,7 @@ import os
 from dsmAzureLib.emailUtil import emailUtil
 from dsmAzureLib.azureUtil import azureUtil
 from dsmAzureLib.azureFunctions import azureFunctions
+from config import settings
 
 def listBlobs(azUtil:azureUtil):
   print('[listBlobs] blobs contains:')
@@ -53,9 +54,9 @@ def sendEmail():
   print('[sendEmail] sending email...')
   
     # Get environment variables
-  emailSvcConnStr = os.environ.get('AZURE_EMAIL_SVC_CONNECTION_STRING')
-  emailSvcSenderAddress = os.environ.get('AZURE_EMAIL_SVC_SENDER_ADDRESS')
-  emailSvcSendToList = os.environ.get('AZURE_EMAIL_SVC_SEND_TO_LIST')
+  emailSvcConnStr = settings['AZURE_EMAIL_SVC_CONNECTION_STRING']
+  emailSvcSenderAddress = settings['AZURE_EMAIL_SVC_SENDER_ADDRESS']
+  emailSvcSendToList = settings['AZURE_EMAIL_SVC_SEND_TO_LIST']
   
   assert emailSvcConnStr and emailSvcSenderAddress and emailSvcSendToList
   
@@ -71,8 +72,8 @@ def sendEmail():
 
 def main():
   # Get the connection string from the environment variable
-  connectionString = os.getenv('AZURE_STORAGE_CONNECTION_STRING')
-  containerName = os.getenv('AZURE_STORAGE_CONTAINER_NAME')
+  connectionString = settings['AZURE_STORAGE_CONNECTION_STRING']
+  containerName = settings['AZURE_STORAGE_CONTAINER_NAME']
 
   azUtil = azureUtil(connectionString, containerName)
   

@@ -1,7 +1,7 @@
 # DSM File Processing Library
 A python library containing the file processing functions for AgriStat CSV and Poulty Plan PDF Files.
 
-The goal of the library is to create reusable code so that new partner files can be added quickly.  It is understood that each partner will have specific requirements, but each will likely be CSV or PDF based.
+The goal of the library is to create reusable code so that new partner files can be added quickly.  It is understood that each partner will have specific requirements, but each will likely be Zip / CSV or PDF based.
 
 # Azure Library
 The dsmAzureLib provides features for the interacting with Azure - currently limited to Azure Storage
