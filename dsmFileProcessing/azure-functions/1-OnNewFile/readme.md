@@ -9,3 +9,10 @@ There is a config.py the further abstracts the details for the function.
 This function utilizes configuration values for:
     service bus: signaling a service bus that the file is ready to be processed
     email: the email notification.  All other values are hard coded in the function_app.py as part of the blob_change_trigger decorator
+
+# Dependencies
+We utilize dsm libraries, specifically:
+- DSMAzureLib
+- DSMFileProcessorLib
+
+While building out the code we often have to make changes to a given library.  In order to get those changes into this project we have to perfrom a pip install [library location/name]

@@ -3,6 +3,7 @@
 # Manually managing azure-functions-worker may cause unexpected issues
 
 ../../../dsmAzureLib/dist/DSMAzureLib-0.1.0-py3-none-any.whl
+../../../dsmFileProcessors/dist/DSMFileProcessorLib-0.1.0-py3-none-any.whl
 
 azure-common
 azure-communication-email

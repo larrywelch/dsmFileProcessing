@@ -1,0 +1,8 @@
+build
+pytest
+pytest-runner
+setuptools >=65
+twine >=4.0.2
+wheel>=0.42.0
+azure-storage-blob
+azure-functions

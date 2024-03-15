@@ -1,43 +1,15 @@
 import string
-import zipfile
 import io
-from azure.storage.blob import BlobClient
 
 import azure.functions as func
 import logging
-from dsmAzureLib.emailUtil import emailUtil
+
 from config import settings
+from dsmFileProcessorLib.AgriStatsFileProcessor import AgriStatsFileProcessor
+from dsmFileProcessorLib.PoultryPlanFileProcessor import PoultryPlanFileProcessor
+from dsmAzureLib.emailUtil import emailUtil
 
 app = func.FunctionApp()
-
-def processTheFile(inputblob, virtualFolderName) :
-    blobConnStr = settings["storageContainerConnStr"]
-    outContainerName = settings["outContainerName"]
-
-    try:
-        
-        with zipfile.ZipFile(io.BytesIO(inputblob.read()) , 'r') as zip_ref:
-            filelist = list(filter(lambda f: f.filename.upper().endswith(".XLSX"), zip_ref.infolist()))
-            logging.info("Processing content of the zip file")
-            for file in filelist:
-                with zip_ref.open(file.filename, 'r') as zip:
-                    logging.info(f"File Name: {zip.name} \n")
-                    # File names are prefixed with #### where ## = Year and ## = Week of the Year
-                    # Chelsea's scripts expect the ###_ to be omitted - we'll do that here
-                    outFileName = zip.name[zip.name.upper().index("WEEK"):]
-                        
-                    # Create a path using a virtual folder structure
-                    path = "{z}/{f}"
-                    p = path.format(z=virtualFolderName, f=outFileName)
-
-                    # Create a blob client and upload the file
-                    blobClient = BlobClient.from_connection_string(conn_str=blobConnStr, container_name=outContainerName, blob_name=p)
-                    blobClient.upload_blob(zip.read(), overwrite = True)
-
-        return None
-
-    except Exception as ex:
-        return ex
 
 def sendEmail(subject: string, message: string) :
     # Get environment variables
@@ -67,32 +39,46 @@ def sendEmail(subject: string, message: string) :
 
 def OnNewFile(inputblob: func.InputStream, outServiceBusMsg: func.Out[str]):
     
-    logging.info(f"New zip file ready for processing \n"
-                 f"Name:            {inputblob.name}\n"
+    nl = '\n'
+    logging.info(f"New zip file ready for processing {nl}"
+                 f"Name:            {inputblob.name}{nl}"
                 )
     
-    # Create a ZipFile using the bytes read from the inputblob
-    if inputblob.name.upper().endswith(".ZIP") :
-        virtualFolderName = inputblob.name.split('/')[1]
-        result = processTheFile(inputblob, virtualFolderName)
-        if (result == None) :
-            # Complete - signal the service bus using the virtual folder name (where the zip file was extracted to)
-            outServiceBusMsg.set(virtualFolderName)
-            sendEmail(
-                f"A New AgriStat Zip File ({virtualFolderName}) is available for processing", 
-                f"{virtualFolderName} is available and will be processed soon.")
-        else:
-            
-            sendEmail(
-                f"A New AgriStat Zip File ({virtualFolderName}) failed to process", 
-                f"{virtualFolderName} failed with the following exception: {result}")
-            
-        logging.info("Complete")
+    blobConnStr = settings["storageContainerConnStr"]
+    outContainerName = settings["outContainerName"]
+    virtualFolderName = inputblob.name.split('/')[1]
+    
+    # Were going to use a simple means for determining which processor to call.  As we get more we can expand    
+    if (inputblob.name.upper().endswith(".ZIP")):
+        # Use agristats
+        processor = AgriStatsFileProcessor()
+
+    elif (inputblob.name.upper().endswith(".PDF")):
+        # use Poulty Plan
+        processor = PoultryPlanFileProcessor()
     else:
         # Input file isn't a zip file, nothing to do
-        logging.info("File is not a zip file, no processing necessary")
+        processor = None
+        logging.info("No processor available for the file.")
+        # Set the exception so that the code below will respond and generate a proper email.
+        ex = Exception("No Processor Available For The File.")
+    
+    # Let's process the file
+    if (processor != None):
+        ex = processor.onNewFile(io.BytesIO(inputblob.read()), blobConnStr, outContainerName, virtualFolderName)
         
+    if (ex == None):
+        # Complete - signal the service bus using the virtual folder name (where the zip file was extracted to)
+        outServiceBusMsg.set(virtualFolderName)
         sendEmail(
-             "A New AgriStat File ({virtualFolderName}) was detected, but it's not a zip file", 
-            f"A New AgriStat File ({virtualFolderName}) was detected, but it's not a zip file and won't be processed.")
+            f"A New AgriStat Zip File ({virtualFolderName}) is available for processing", 
+            f"{virtualFolderName} is available and will be processed soon.")
+    else:
+        sendEmail(
+            f"A New AgriStat Zip File ({virtualFolderName}) failed to process", 
+            f"{virtualFolderName} failed with the following exception: {nl} {ex}")
+
+    # Log the final message
+    logging.info("Complete")
+ 
 

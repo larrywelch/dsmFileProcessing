@@ -9,6 +9,11 @@ The dsmAzureLib provides features for the interacting with Azure - currently lim
 # CSV Library
 The dsmCSVLib provides features for parsing csv files to then be processed into a sql database.
 
+# DSM File Processors
+The library contains processors for all well known file types.  Currently limited to:
+- Agristats - zip files
+- Poultry Plan - pdf's
+
 # PDF Library
 The dsmPDFLib provides features for uploading pdf files to azure, parsing csv files to then be processed into a sql database.
 

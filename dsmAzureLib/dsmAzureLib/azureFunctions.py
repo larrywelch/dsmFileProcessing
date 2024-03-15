@@ -29,3 +29,10 @@ class azureFunctions:
     baseFileName = os.path.basename(fileName)
     with open(file=fileName, mode="rb") as data:
       return azUtil.getContainerClient().upload_blob(name=baseFileName, data=data, overwrite=True)
+
+  @staticmethod
+  def uploadBytes(azUtil: azureUtil, data: bytes, virtualFolderName: str, blobName: str):
+    path = "{z}/{f}"
+    p = path.format(z=virtualFolderName, f=blobName)
+    azUtil.getContainerClient().upload_blob(name=p, data=data, overwrite=True)
+    return
