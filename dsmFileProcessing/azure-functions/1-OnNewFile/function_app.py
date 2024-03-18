@@ -32,10 +32,15 @@ def sendEmail(subject: string, message: string) :
   
     print('[sendEmail] complete!')
  
-     
-@app.blob_trigger(arg_name="inputblob", path="sample-files-to-be-processed",
-                               connection="storageContainerConnStr") 
-@app.service_bus_queue_output(arg_name='outServiceBusMsg', connection='AzureServiceBusConnectionString', queue_name='sample-file-ready-for-processing')
+# NOTE: Make sure to change the path to reflect the production container
+@app.blob_trigger(arg_name="inputblob", 
+                    path="sample-files-to-be-processed",
+                    connection="storageContainerConnStr") 
+
+# NOTE: Make sure to change the queue_name to reflect the production queue
+@app.service_bus_queue_output(arg_name='outServiceBusMsg', 
+                              connection='AzureServiceBusConnectionString', 
+                              queue_name='sample-file-ready-for-processing')
 
 def OnNewFile(inputblob: func.InputStream, outServiceBusMsg: func.Out[str]):
     

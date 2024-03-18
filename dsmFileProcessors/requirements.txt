@@ -6,3 +6,6 @@ twine >=4.0.2
 wheel>=0.42.0
 azure-storage-blob
 azure-functions
+pandas
+openpyxl
+pyodbc

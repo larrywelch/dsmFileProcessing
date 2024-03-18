@@ -44,9 +44,8 @@ def downloadBlob(azUtil:azureUtil):
   if (number_of_blobs > 0):
     # download the first blob
     blob = blobList[0]
-    stream = azureFunctions.downloadBlob(azUtil, blob.name)
-    assert stream != None   
-    stream.close()
+    downloader = azureFunctions.downloadBlob(azUtil, blob.name)
+    assert downloader != None   
     print('[downloadBlob] success!')
 
 

@@ -1,11 +1,12 @@
-
+'''
+    main.py - Example application that uses the file processors
+'''
 import os, io
-from dsmFileProcessorLib.AgriStatsFileProcessor import AgriStatsFileProcessor
-from dsmFileProcessorLib.PoultryPlanFileProcessor import PoultryPlanFileProcessor
+from dsmFileProcessorLib import AgriStatFileProcessor, PoultyPlanFileProcessor
 
 def loopThroughProcessors():
     # Create a list of file processors   
-    processors = [AgriStatsFileProcessor(), PoultryPlanFileProcessor()]
+    processors = [AgriStatFileProcessor(), PoultyPlanFileProcessor()]
 
     print('looping through the processors...')
     for fp in processors:
@@ -31,7 +32,7 @@ def testAgriStatProcessor():
     fileName = os.path.join(samplesDir, '06-02-2023.zip')
     with open(fileName, 'rb') as fh:
         buf = io.BytesIO(fh.read()) 
-        processor = AgriStatsFileProcessor() 
+        processor = AgriStatFileProcessor()
         processor.onNewFile(buf, blobConnStr, containerName, virtualFolderName)
     
     print('[testAgriStatProcessor] complete.')
@@ -51,7 +52,7 @@ def testPoultryProcessor():
     fileName = os.path.join(samplesDir, 'Performance data Mans 20230718.pdf')
     with open(fileName, 'rb') as fh:
         buf = io.BytesIO(fh.read()) 
-        processor = PoultryPlanFileProcessor() 
+        processor = PoultyPlanFileProcessor()
         processor.onNewFile(buf, blobConnStr, containerName, virtualFolderName)
     
     print('[testAgriStatProcessor] complete.')
@@ -62,8 +63,10 @@ def testPoultryProcessor():
 def main():
     print('Starting...')  
 
-    #testAgriStatProcessor()
+    testAgriStatProcessor()
     
     testPoultryProcessor()
         
+    print('All tests complete.')
+    
 main()

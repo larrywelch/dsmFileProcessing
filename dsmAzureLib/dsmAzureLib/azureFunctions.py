@@ -6,6 +6,8 @@
 import io
 import os
 import string
+from typing import overload
+from azure.storage.blob import StorageStreamDownloader
 
 from dsmAzureLib.azureUtil import azureUtil
 from io import BufferedReader
@@ -16,14 +18,12 @@ class azureFunctions:
   @staticmethod
   def getBlobs(azUtil: azureUtil) -> ItemPaged[BlobProperties]:
     return azUtil.getContainerClient().list_blobs()
-
+ 
   @staticmethod
-  def downloadBlob(azUtil: azureUtil, blobName: string) -> BufferedReader:
+  def downloadBlob(azUtil: azureUtil, blobName: string) -> StorageStreamDownloader:
     download = azUtil.getContainerClient().download_blob(blobName)
-    stream = io.BytesIO(download.readall())
-    reader = io.BufferedReader(stream)
-    return reader
-  
+    return download
+ 
   @staticmethod
   def uploadFile(azUtil: azureUtil, fileName: string) -> BlobClient:
     baseFileName = os.path.basename(fileName)

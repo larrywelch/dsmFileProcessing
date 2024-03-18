@@ -16,7 +16,7 @@ import zipfile, io
 from dsmAzureLib.azureUtil import azureUtil
 from dsmAzureLib.azureFunctions import azureFunctions
 
-class PoultryPlanFileProcessor():
+class PoultyPlanFileProcessor():
     def __init__(self) -> None:
         pass
     
