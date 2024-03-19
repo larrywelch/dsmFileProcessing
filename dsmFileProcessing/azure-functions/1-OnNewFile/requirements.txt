@@ -3,10 +3,18 @@
 # Manually managing azure-functions-worker may cause unexpected issues
 
 ../../../dsmAzureLib/dist/DSMAzureLib-0.1.0-py3-none-any.whl
-../../../dsmFileProcessors/dist/DSMFileProcessorLib-0.1.0-py3-none-any.whl
+../../../dsmFileProcessors/dist/DSMFileProcessorLib-0.1.1-py3-none-any.whl
+
+azure-functions
+azure-storage-blob
+azure-core
+azure-cosmos
 
 azure-common
 azure-communication-email
 azure-mgmt-core
-azure-functions
-azure-storage-blob
+
+pandas
+openpyxl
+pyodbc
+sqlalchemy

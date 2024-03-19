@@ -1,13 +1,14 @@
 import string
 import io
-
-import azure.functions as func
 import logging
+import azure.functions as func
 
 from config import settings
-from dsmFileProcessorLib.AgriStatsFileProcessor import AgriStatsFileProcessor
-from dsmFileProcessorLib.PoultryPlanFileProcessor import PoultryPlanFileProcessor
 from dsmAzureLib.emailUtil import emailUtil
+
+from dsmFileProcessorLib import AgriStatConfig
+from dsmFileProcessorLib import AgriStatFileProcessor
+from dsmFileProcessorLib import PoultyPlanFileProcessor
 
 app = func.FunctionApp()
 
@@ -48,19 +49,21 @@ def OnNewFile(inputblob: func.InputStream, outServiceBusMsg: func.Out[str]):
     logging.info(f"New zip file ready for processing {nl}"
                  f"Name:            {inputblob.name}{nl}"
                 )
-    
-    blobConnStr = settings["storageContainerConnStr"]
-    outContainerName = settings["outContainerName"]
+
     virtualFolderName = inputblob.name.split('/')[1]
     
     # Were going to use a simple means for determining which processor to call.  As we get more we can expand    
     if (inputblob.name.upper().endswith(".ZIP")):
         # Use agristats
-        processor = AgriStatsFileProcessor()
+        config : AgriStatConfig = AgriStatConfig.builder() \
+            .with_azure_storage_elements(settings['blobConnStr'], settings['inContainerName'], settings['outContainerName'], virtualFolderName, settings['finalResultsFileName']) \
+            .with_sql_config_elements(settings['sql_user_name'], settings['sql_user_pw'], settings['sql_server_url'], settings['sql_server_port'], settings['odbc-driver'], settings['sql_server_db_name'], settings['sql_server_table_name']) \
+            .build()
+        processor = AgriStatFileProcessor(config)
 
     elif (inputblob.name.upper().endswith(".PDF")):
         # use Poulty Plan
-        processor = PoultryPlanFileProcessor()
+        processor = PoultyPlanFileProcessor()
     else:
         # Input file isn't a zip file, nothing to do
         processor = None
@@ -70,7 +73,7 @@ def OnNewFile(inputblob: func.InputStream, outServiceBusMsg: func.Out[str]):
     
     # Let's process the file
     if (processor != None):
-        ex = processor.onNewFile(io.BytesIO(inputblob.read()), blobConnStr, outContainerName, virtualFolderName)
+        ex = processor.onNewFile(io.BytesIO(inputblob.read()))
         
     if (ex == None):
         # Complete - signal the service bus using the virtual folder name (where the zip file was extracted to)
