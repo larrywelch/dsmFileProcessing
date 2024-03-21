@@ -14,10 +14,10 @@ import azure.functions as func
 import logging
 
 # Import the function handlers
-from src.OnProcessSourceFileHandler import OnProcessSourceFileHandler
-from src.OnProcessExtractedFilesHandler import OnProcessExtractedFilesHandler
-from src.OnProcessFinalResultsHandler import OnProcessFinalResultsHandler
-from src.configuration import settings
+import dsmPackage.OnHandlers as OnHandlers
+
+# Import the configuration
+from configuration import settings
 
 # Create our function app to be used by all the functions
 app = func.FunctionApp()
@@ -48,7 +48,7 @@ def OnProcessSourceFile(sourceFileBlob: func.InputStream, sbOutMsgProcessExtract
     logging.info(f" Name:{sourceFileBlob.name}")
     
     # Call the handler
-    if (OnProcessSourceFileHandler(sourceFileBlob, logging)):
+    if (OnHandlers.OnProcessSourceFileHandler(sourceFileBlob, logging)):
         # Set the service bus message to the name of the input file name
         sbOutMsgProcessExtractedFiles.set(fileName)
     else:
@@ -80,7 +80,7 @@ def OnProcessExtractedFiles(sbInMsgProcessExtractedFiles: func.ServiceBusMessage
     logging.info(f" Virtual Folder:{virtualFolderName}")
     
     # Call the handler
-    if (OnProcessExtractedFilesHandler(logging)):
+    if (OnHandlers.OnProcessExtractedFilesHandler(logging)):
         # The name of the final results file, stored in the virtual folder when complete
         blobName = f"{virtualFolderName}/{finalResultsFileName}"
         sbOutMsgProcessFinalResults.set(blobName)
@@ -108,7 +108,7 @@ def OnProcessFinalResults(sbInMsgProcessFinalResults: func.ServiceBusMessage):
     logging.info(f" Final Results File Name: {finalResultsFileName}")
     
     # Call the handler
-    if (OnProcessFinalResultsHandler(logging)) :
+    if (OnHandlers.OnProcessFinalResultsHandler(logging)) :
         pass
     else:
         pass
