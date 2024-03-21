@@ -2,10 +2,9 @@ ECHO ON
 
 REM Storage Container Values
 SET AZURE_STORAGE_CONTAINER_CONN_STR=DefaultEndpointsProtocol=https;AccountName=dsmfileprocessingsadev;AccountKey=pITxU1tnCVrY2IGC6vNZd203AFZdSwFc9YLub4pg2UrxrJVoNDKeD+mdiU3g5HYwzgpd/QtgZYY++AStVQpSRA==;EndpointSuffix=core.windows.net
-SET BLOB_CONN_STR=
+SET BLOB_CONN_STR=DefaultEndpointsProtocol=https;AccountName=dsmfileprocessingsadev;AccountKey=pITxU1tnCVrY2IGC6vNZd203AFZdSwFc9YLub4pg2UrxrJVoNDKeD+mdiU3g5HYwzgpd/QtgZYY++AStVQpSRA==;EndpointSuffix=core.windows.net
 SET BLOB_IN_CONTAINER_NAME=sample-files-to-be-processed
 SET BLOB_OUT_CONTAINER_NAME=sample-files-extracted
-SET BLOB_FINAL_RESULT_FILE_NAME=final_results.csv
 
 REM Service Bus Values
 SET AZURE_SERVICE_BUS_CONN_STR=Endpoint=sb://dsm-file-processing-sb-dev.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=cGJpebVGyd22/IwZnNfBdxmmoiM35Ut8o+ASbD4WIg4=

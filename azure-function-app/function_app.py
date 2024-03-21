@@ -32,12 +32,12 @@ app = func.FunctionApp()
 @app.blob_trigger(
     arg_name="sourceFileBlob", 
     path="dsm-source-files",
-    connection="AzureStorageContainerConnStr") 
+    connection="AZURE_STORAGE_CONTAINER_CONN_STR") 
 
 # NOTE: Make sure to change the queue_name to reflect the production queue
 @app.service_bus_queue_output(
     arg_name='sbOutMsgProcessExtractedFiles', 
-    connection='AzureServiceBusConnStr', 
+    connection='AZURE_SERVICE_BUS_CONN_STR', 
     queue_name='dsm-process-extracted-files')
 
 def OnProcessSourceFile(sourceFileBlob: func.InputStream, sbOutMsgProcessExtractedFiles: func.Out[str]):
@@ -48,10 +48,13 @@ def OnProcessSourceFile(sourceFileBlob: func.InputStream, sbOutMsgProcessExtract
     logging.info(f" Name:{sourceFileBlob.name}")
     
     # Call the handler
-    if (OnHandlers.OnProcessSourceFileHandler(sourceFileBlob, logging)):
+    ex = OnHandlers.OnProcessSourceFileHandler(sourceFileBlob, settings, logging)
+    if (ex == None):
         # Set the service bus message to the name of the input file name
         sbOutMsgProcessExtractedFiles.set(fileName)
     else:
+        # There was an exception
+        logging.warning(repr(ex))
         pass
     
 '''
@@ -63,11 +66,11 @@ def OnProcessSourceFile(sourceFileBlob: func.InputStream, sbOutMsgProcessExtract
 @app.service_bus_queue_trigger(
     arg_name="sbInMsgProcessExtractedFiles", 
     queue_name="dsm-process-extracted-files",
-    connection="AzureServiceBusConnStr") 
+    connection="AZURE_SERVICE_BUS_CONN_STR") 
 
 @app.service_bus_queue_output(
     arg_name='sbOutMsgProcessFinalResults', 
-    connection='AzureServiceBusConnStr', 
+    connection='AZURE_SERVICE_BUS_CONN_STR', 
     queue_name='dsm-process-final-results')
 
 def OnProcessExtractedFiles(sbInMsgProcessExtractedFiles: func.ServiceBusMessage, sbOutMsgProcessFinalResults: func.Out[str]):
@@ -97,7 +100,7 @@ def OnProcessExtractedFiles(sbInMsgProcessExtractedFiles: func.ServiceBusMessage
 @app.service_bus_queue_trigger(
     arg_name="sbInMsgProcessFinalResults", 
     queue_name="dsm-process-final-results",
-    connection="AzureServiceBusConnStr") 
+    connection="AZURE_SERVICE_BUS_CONN_STR") 
 
 def OnProcessFinalResults(sbInMsgProcessFinalResults: func.ServiceBusMessage):
     # The virtual is the name of the original zip file which is then used as the virtual folder name in the extracted files
