@@ -15,4 +15,5 @@ pandas
 openpyxl
 pyodbc
 sqlalchemy
+pdfservices-sdk
 

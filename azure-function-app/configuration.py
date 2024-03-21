@@ -31,5 +31,8 @@ settings = {
     'email-notification-svc-conn-str': os.getenv('EMAIL_NOTIFICATION_SVC_CONN_STR', '***SENSITIVE-SET-ENV_VARIABLE***'),
     'email-notification-send-to-list' : os.getenv('EMAIL_NOTIFICATION_SEND_TO_LIST', 'larry.welch@foundationtek.com'),
     'email-notification-poller-wait-time': os.getenv('EMAIL_NOTIFICATION_POLLER_WAIT_TIME', 10),
-    'email-notification-sender-address' : os.getenv('EMAIL_NOTIFICATION_SENDER_ADDRESS', '***SENSITIVE-SET-ENV_VARIABLE***')
+    'email-notification-sender-address' : os.getenv('EMAIL_NOTIFICATION_SENDER_ADDRESS', '***SENSITIVE-SET-ENV_VARIABLE***'),
+
+    'pdfClientId' : os.getenv('PDF_SERVICES_CLIENT_ID', '***SENSITIVE-SET-ENV_VARIABLE***'),
+    'pdfClientSecret' : os.getenv('PDF_SERVICES_CLIENT_SECRET', '***SENSITIVE-SET-ENV_VARIABLE***')
 }

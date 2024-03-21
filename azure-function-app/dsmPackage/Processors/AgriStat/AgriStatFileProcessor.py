@@ -40,7 +40,7 @@ class AgriStatFileProcessor():
         except Exception as ex:
             return ex
           
-    def onFileReadyForProcessing(self):
+    def OnProcessExtractedFiles(self):
         print('[agriStatsFileProcessor:onFileReadyForProcessing]')
         config = self._configuration
         # Create our container that we'll use to download files and upload the final results
@@ -55,7 +55,7 @@ class AgriStatFileProcessor():
         
         return
     
-    def onFinalResultsReadyForProcessing(self):
+    def OnProcessFinalResults(self):
         print('[agriStatsFileProcessor:onFinalResultsReadyForProcessing]')
         config = self._configuration
         
