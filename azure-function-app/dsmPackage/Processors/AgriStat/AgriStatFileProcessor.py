@@ -3,7 +3,7 @@
     extracted into it's excel spreadsheet parts.
 '''
 
-import zipfile, io
+import zipfile, io, logging
 import pandas as pd
 import sqlalchemy
 import azure.functions as func
@@ -16,12 +16,14 @@ from .AgriStatProcess import process
 class AgriStatFileProcessor():
     def __init__(self, config: ProcessorConfig) -> None:
         self._configuration = config
+        self._finalResultsFileName = 'final_results.csv'
+        self._finalResultsTableName = 'agristats_final_results'
         pass
 
     def onProcessSourceFile(self, sourceFileBlob : func.InputStream) -> Exception :
-        print(f'[agriStatsFileProcessor:onProcessSourceFile] {sourceFileBlob.name}')
+        logging.info(f'[agriStatsFileProcessor:onProcessSourceFile] {sourceFileBlob.name}')
         inputBytes = io.BytesIO(sourceFileBlob.read())
-        virtualFolderName = sourceFileBlob.name.split('/')[1]
+        sourceFileName = sourceFileBlob.name.split('/')[1]
         try:                    
             config = self._configuration
             azUtil = azureUtil(config.blobConnStr, config.outContainerName)
@@ -34,29 +36,30 @@ class AgriStatFileProcessor():
                         outFileName = zip.name[zip.name.upper().index("WEEK"):]
 
                         # Use the azure utils/functions to upload the file (bytes)
-                        azureFunctions.uploadBytes(azUtil=azUtil, data=zip.read(), virtualFolderName=virtualFolderName, blobName=outFileName)
+                        azureFunctions.uploadBytes(azUtil=azUtil, data=zip.read(), virtualFolderName=sourceFileName, blobName=outFileName)
             return None
 
         except Exception as ex:
             return ex
           
-    def OnProcessExtractedFiles(self):
-        print('[agriStatsFileProcessor:onFileReadyForProcessing]')
+    def OnProcessExtractedFiles(self, sourceFileName: str):
+        logging.info('[agriStatsFileProcessor:OnProcessExtractedFiles]')
         config = self._configuration
+        
         # Create our container that we'll use to download files and upload the final results
         azUtil = azureUtil(config.blobConnStr, config.outContainerName)
         
         # Process the blob (file) using Chelsea's script
-        csvOutput = process(azUtil, config.folderName)
+        csvOutput = process(azUtil, sourceFileName)
         
         # Upload the final results
         data = bytes(csvOutput, 'utf-8')
-        azureFunctions.uploadBytes(azUtil, data, config.folderName, 'final_results.csv')
+        azureFunctions.uploadBytes(azUtil, data, sourceFileName, 'final_results.csv')
         
         return
     
-    def OnProcessFinalResults(self):
-        print('[agriStatsFileProcessor:onFinalResultsReadyForProcessing]')
+    def OnProcessFinalResults(self, sourceFileName: str):
+        logging.info('[agriStatsFileProcessor:OnProcessFinalResults]')
         config = self._configuration
         
         # Create our container that we'll use to download files and upload the final results
@@ -64,15 +67,14 @@ class AgriStatFileProcessor():
         
         # Create a path using a virtual folder structure
         path = "{z}/{f}"
-        fullFileName = path.format(z=config.folderName, f=config.finalResultsFileName)
+        fullFileName = path.format(z=sourceFileName, f=self._finalResultsFileName)
         
         # Read the file
-        #file = containerClient.download_blob(fullFileName).read()
         downloader  = azureFunctions.downloadBlob(azUtil, fullFileName)
         finalResults = pd.read_csv(io.BytesIO(downloader.readall()), sep=",", dtype=str)
     
         # Store the source zip file name within the final results (the folder name is the name of the zip file)
-        finalResults['source_file'] = config.folderName
+        finalResults['source_file'] = sourceFileName
         
         # Create the connection string using the values from the config
         #https://stackoverflow.com/questions/44760221/pyodbc-connect-works-but-not-sqlalchemy-create-engine-connect
@@ -87,7 +89,7 @@ class AgriStatFileProcessor():
         engine = sqlalchemy.create_engine(connection_url, connect_args={"timeout": 30})
         engine.connect()
 
-        finalResults.to_sql(config.sqlTableName, engine, if_exists='append', index=False)
+        finalResults.to_sql(self._finalResultsTableName, engine, if_exists='append', index=False)
 
         return
     

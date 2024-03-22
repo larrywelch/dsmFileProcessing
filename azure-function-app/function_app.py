@@ -3,10 +3,10 @@
     
     There are 3 functions within this app.  They are:
     1. OnProcessSourceFile - executes when a new file is added to a storage container, when complete, signals a service bus 
-    2. OnExtractedFilesReady - executes when the service bus is signaled in OnNewFile, signals a service bus when complete
-    3. OnFinalResultsReady - executes when the service bus is signaled in OnFileReadyForProcessing
+    2. OnProcessExtractedFiles - executes when the service bus is signaled in OnProcessSourceFile, signals a service bus when complete
+    3. OnProcessFinalResults - executes when the service bus is signaled in OnProcessExtractedFiles
 
-    The functions use handler code that is located in the src folder.  Each handler
+    The functions use handler code that is located in the dsmPackage.OnHandlers folder.  Each handler
     is named the same as the function with a Handler suffix.
 '''
 
@@ -18,6 +18,9 @@ import dsmPackage.OnHandlers as OnHandlers
 
 # Import the configuration
 from configuration import settings
+
+# Import email notification
+from sendEmailNotification import sendEmail
 
 # Create our function app to be used by all the functions
 app = func.FunctionApp()
@@ -48,18 +51,28 @@ def OnProcessSourceFile(sourceFileBlob: func.InputStream, sbOutMsgProcessExtract
     logging.info(f" Name:{sourceFileBlob.name}")
     
     # Call the handler
-    ex = OnHandlers.OnProcessSourceFileHandler(sourceFileBlob, settings, logging)
+    ex = OnHandlers.OnProcessSourceFileHandler(sourceFileBlob, settings)
     if (ex == None):
         # Set the service bus message to the name of the input file name
         sbOutMsgProcessExtractedFiles.set(fileName)
+        
+        # Send an email
+        sendEmail(
+            f"A New Source File ({fileName}) is available for processing", 
+            f"{fileName} is available and will be processed soon.")        
     else:
         # There was an exception
         logging.warning(repr(ex))
-        pass
+        
+        # Send an email
+        sendEmail(
+            f"A New Source File ({fileName}) failed to process", 
+            f"{fileName} failed with the following exception: {repr(ex)}")
+            
     
 '''
     OnProcessExtractedFiles - executes when the service bus is signaled from OnNewFile
-    process the extracted files into a final results file
+
     Signals a service bus when finished, causing OnFinalResultsReadyForProcessing to execute.
 '''
 
@@ -74,23 +87,28 @@ def OnProcessSourceFile(sourceFileBlob: func.InputStream, sbOutMsgProcessExtract
     queue_name='dsm-process-final-results')
 
 def OnProcessExtractedFiles(sbInMsgProcessExtractedFiles: func.ServiceBusMessage, sbOutMsgProcessFinalResults: func.Out[str]):
-    # virtualFolder is the name of the original zip file which is then used as the virtual folder name in the extracted files
-    # ex: extracted-files/06-02023.zip/week1...xlsx
-    #                                  week2...xlsx
-    virtualFolderName = sbInMsgProcessExtractedFiles.get_body().decode('utf-8')
-    finalResultsFileName = settings['finalResultsFileName']
+    sourceFileName = sbInMsgProcessExtractedFiles.get_body().decode('utf-8')
     logging.info('[OnProcessExtractedFiles] entered, processing the extracted files...')
-    logging.info(f" Virtual Folder:{virtualFolderName}")
+    logging.info(f" Source File Name Folder:{sourceFileName}")
     
     # Call the handler
-    if (OnHandlers.OnProcessExtractedFilesHandler(logging)):
-        # The name of the final results file, stored in the virtual folder when complete
-        blobName = f"{virtualFolderName}/{finalResultsFileName}"
-        sbOutMsgProcessFinalResults.set(blobName)
-        pass
+    ex = OnHandlers.OnProcessExtractedFilesHandler(sourceFileName, settings)
+    if (ex == None):
+        # Signal the service bus
+        sbOutMsgProcessFinalResults.set(sourceFileName)
+        
+        # Send an email
+        sendEmail(
+            f"Source File ({sourceFileName}) has been extracted", 
+            f"{sourceFileName} was extracted.  It's contents will be processed into final results soon.")   
     else:
-        pass
+        # There was an exception
+        logging.warning(repr(ex))
     
+        # Send an email
+        sendEmail(
+            f"Source File ({sourceFileName}) failed extraction", 
+            f"{sourceFileName} failed extraction with the following exception: {repr(ex)}")
     
 '''
     OnProcessFinalResults - executes when the service bus is signaled from OnFileReadyForProcessing
@@ -103,17 +121,26 @@ def OnProcessExtractedFiles(sbInMsgProcessExtractedFiles: func.ServiceBusMessage
     connection="AZURE_SERVICE_BUS_CONN_STR") 
 
 def OnProcessFinalResults(sbInMsgProcessFinalResults: func.ServiceBusMessage):
-    # The virtual is the name of the original zip file which is then used as the virtual folder name in the extracted files
-    # The final results csv file is stored in the virtual folder and the file name is passed through the service bus message
-    finalResultsFileName = sbInMsgProcessFinalResults.get_body().decode('utf-8')
-
-    logging.info('[OnProcessFinalResults] entered, processing the final results file...')
-    logging.info(f" Final Results File Name: {finalResultsFileName}")
+    sourceFileName = sbInMsgProcessFinalResults.get_body().decode('utf-8')
+    logging.info('[OnProcessFinalResults] entered, processing the extracted files...')
+    logging.info(f" Source File Name Folder:{sourceFileName}")
     
     # Call the handler
-    if (OnHandlers.OnProcessFinalResultsHandler(logging)) :
-        pass
+    ex = OnHandlers.OnProcessFinalResultsHandler(sourceFileName, settings)
+    if (ex == None) :
+        logging.info(f'Process is complete for Source File: {sourceFileName}')
+        
+        # Send an email
+        sendEmail(
+            f"Source File ({sourceFileName}) has been fully processed", 
+            f"{sourceFileName} has been fully processed and the results have stored in SQL.")           
     else:
-        pass
+        # There was an exception
+        logging.warning(repr(ex))
+        
+        # Send an email
+        sendEmail(
+            f"Source File ({sourceFileName}) failed final processing", 
+            f"{sourceFileName} failed final processing with the following exception: {repr(ex)}")        
 
 

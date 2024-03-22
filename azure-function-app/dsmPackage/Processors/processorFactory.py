@@ -14,7 +14,7 @@ class processorFactory:
         
         config : ProcessorConfig = ProcessorConfig.builder() \
             .with_azure_storage_elements(settings['blobConnStr'], settings['inContainerName'], settings['outContainerName']) \
-            .with_sql_config_elements(settings['sql_user_name'], settings['sql_user_pw'], settings['sql_server_url'], settings['sql_server_port'], settings['odbc-driver'], settings['sql_server_db_name'], settings['sql_server_table_name']) \
+            .with_sql_config_elements(settings['sql_user_name'], settings['sql_user_pw'], settings['sql_server_url'], settings['sql_server_port'], settings['odbc-driver'], settings['sql_server_db_name']) \
             .with_pdf_config_elements(settings['pdfClientId'], settings['pdfClientSecret']) \
             .build()
             

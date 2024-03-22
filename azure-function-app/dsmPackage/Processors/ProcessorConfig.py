@@ -13,7 +13,6 @@ class ProcessorConfig() :
                 serverPort: int,
                 odbcDriver: str,
                 dbName: str,
-                tableName: str,
                 pdfClientId: str,
                 pdfClientSecret: str                
             ):
@@ -25,8 +24,7 @@ class ProcessorConfig() :
         self.sqlServerUrl = serverUrl
         self.sqlServerPort = serverPort
         self.odbcDriver = odbcDriver
-        self.sqlDBName = dbName
-        self.sqlTableName = tableName            
+        self.sqlDBName = dbName        
         self.pdfClientId = pdfClientId
         self.pdfClientSecret = pdfClientSecret
     
@@ -56,8 +54,7 @@ class ProcessorConfig() :
                                      serverUrl: str,
                                      serverPort: int,
                                      odbcDriver: str,
-                                     dbName: str,
-                                     tableName: str
+                                     dbName: str
                                      ):
             self.sqlUserName = userName
             self.sqlUserPassword = userPassword
@@ -65,7 +62,7 @@ class ProcessorConfig() :
             self.sqlServerPort = serverPort
             self.odbcDriver = odbcDriver
             self.sqlDBName = dbName
-            self.sqlTableName = tableName
+
             return self
         
         def with_pdf_config_elements(self,
@@ -86,7 +83,6 @@ class ProcessorConfig() :
                 self.sqlServerPort,
                 self.odbcDriver,
                 self.sqlDBName,
-                self.sqlTableName,
                 self.pdfClientId,
                 self.pdfClientSecret
             )
