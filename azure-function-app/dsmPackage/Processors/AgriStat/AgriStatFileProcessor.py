@@ -10,11 +10,11 @@ import azure.functions as func
 
 from dsmPackage.AzureLib.azureUtil import azureUtil
 from dsmPackage.AzureLib.azureFunctions import azureFunctions
-from .AgriStatConfig import AgriStatConfig
+from dsmPackage.Processors.ProcessorConfig import ProcessorConfig
 from .AgriStatProcess import process
 
 class AgriStatFileProcessor():
-    def __init__(self, config: AgriStatConfig) -> None:
+    def __init__(self, config: ProcessorConfig) -> None:
         self._configuration = config
         pass
 
