@@ -1,6 +1,0 @@
-pdfquery==0.4.3
-pdfservices-sdk==2.3.0
-requests==2.27.1
-setuptools >=65
-twine >=4.0.2
-wheel>=0.42.0
